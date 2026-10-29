@@ -7,7 +7,7 @@ format:
     embed-resources: true
 editor: visual
 toc: true
-code-link: true
+code-link: false
 code-fold: true
 cache: true
 ---
@@ -26,12 +26,11 @@ library(gtsummary)
 library(ggstatsplot)
 library(downlit)
 library(broom)
-
+library(here)
 # load the data
-titanic <- ggstatsplot::Titanic_full |>
-  mutate(
-    Class = factor(Class)
-  )
+df <- read_csv(here("data", "My_Data.csv"))
+
+
 ```
 
 ## The Titanic Data Set
