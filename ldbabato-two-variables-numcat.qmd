@@ -1,6 +1,6 @@
 ---
 title: "Two Variables: Quantitative and Qualitative"
-author: Orville D. Hombrebueno
+author: Lorenzo D. Babato
 date: today
 format:
   html:
@@ -28,169 +28,157 @@ library(ggstatsplot)
 library(downlit)
 library(broom)
 library(car)
-
-# load data
-data(mtcars)
+library(here)
 ```
 
-## Motor Trend Car Road Tests
+```{r}
+#| label: data
+#| warning: false
+#| message: false
+df <- read_csv(here("data", "my_dataset_enso.csv"))
 
-The data was extracted from the 1974 Motor Trend US magazine, and comprises fuel consumption and 10 aspects of automobile design and performance for 32 automobiles (1973–74 models).
+df <- df |>
+  mutate(
+    # 1. First Ordinal Variable: Academic Satisfaction
+    Academic_Satisfaction = factor(
+      Academic_Satisfaction,
+      levels = c("Low_satisfaction", "Moderate_Satisfaction", "High_Satisfaction"),
+      ordered = TRUE
+    ),
+    
+    # 2. Second Ordinal Variable: Sleep Duration
+    Sleep_Duration = factor(
+      Sleep_Duration,
+      levels = c("Less_than_6_hours", "6_to_8_hours", "More_than_8_hours"),
+      ordered = TRUE
+    )
+  ) |>
+  select(
+    Academic_Satisfaction,
+    Sleep_Duration
+  )
+```
 
-A data frame with 32 observations on 11 (numeric) variables.
+## NVSU_Student_Survey
 
--   `mpg` Miles/(US) gallon
+The 'NVSU_Student_Survey' data set is a data frame with 68 rows and 2 variables.
 
--   `cyl` Number of cylinders
+- 'Living_Arrangement' With_Family, Independent_Living.
 
--   `disp` Displacement (cu.in.)
+- 'Academic_Satisfaction' Low_satisfaction, Moderate_Satisfaction, High_Satisfaction.
 
--   `hp` Gross horsepower
+This data set provides information on student profiles at Nueva Vizcaya State University (NVSU), summarized according to living arrangements and academic satisfaction.
 
--   `drat` Rear axle ratio
-
--   `wt` Weight (1000 lbs)
-
--   `qsec` 1/4 mile time
-
--   `vs` Engine (0 = V-shaped, 1 = straight)
-
--   `am` Transmission (0 = automatic, 1 = manual)
-
--   `gear` Number of forward gears
-
--   `carb` Number of carburetors
-
-The first 6 rows of the data set are shown in @tbl-mtcars
+The first 6 rows of the data set are shown in @tbl-satisfaction
 
 ```{r}
-#| label: tbl-mtcars
+#| label: tbl-satisfaction
 #| warning: false
 #| message: false
 #| error: false
 #| tbl-cap: "The first 6 observations of the data set."
 
-mtcars |> # call the data
+df |> # call the data
   head() |> # get the first six rows of the data
-  kable() # create a table
+  kable(
+    col.names = c("Academic Satisfaction", "Duration of Sleep")
+  ) # create a table
 ```
 
 ## Descriptive Statistics
 
-The mean, standard deviation, minimum, and maximum of `mpg` when grouped according to `am` are shown in @tbl-summary. There is a total of 32 observations.
+The frequency distribution of `Academic_Satisfaction` when grouped according to `Sleep_Duration` is shown in @tbl-satisfaction. Most of the students report moderate satisfaction. The majority of students with lower sleep durations cluster in specific satisfaction tiers, whereas those with balanced sleep show wider distributions across categories.
 
 ```{r}
+
 #| label: tbl-summary
-#| tbl-cap: "Summary statistics."
+#| tbl-cap: "Summary statistics of `Academic_Satisfaction` when grouped according to `Sleep_Duration`."
 #| message: false
 
-mtcars |> # call the data
-  mutate(
-    am = factor(
-      am, levels = c(0, 1),
-      labels = c("Automatic", "Manual")
-    )
-  ) |>
-  tbl_summary( # create a table
-    by = am, # grouping
-    include = c(mpg, am), # select variables
-    statistic = all_continuous() ~ "{mean} ± {sd} ({min} - {max})", # descriptive statistics
-    digits = all_continuous() ~ 2 # no. of digits (rounding)
+df |> 
+
+#  tbl_summary(
+#    by = Academic_Satisfaction,
+#    include = Sleep_Duration
+    tbl_cross(
+      row = Academic_Satisfaction,
+      col = Sleep_Duration,
+      percent = "column",
+      margin = c("row", "column"),
+      label = list(
+        Academic_Satisfaction ~ "Academic Satisfaction",
+        Sleep_Duration ~ "Duration of Sleep"
+      )
   )
+
 ```
 
 # Hypothesis Testing
 
-### Research Question
+## Research Question
 
-Is there a significant difference in miles/(US) gallon when grouped according to transmission?
+Does the students' duration of sleep affect their academic satisfaction?
 
-### Hypothesis and Test Statistics
+## Hypothesis and Test Statistics
 
--   $H_0:\mu_A=\mu_M$; the mean miles/(US) gallon is the same when grouped according to transmission.
+- $H_0:p_{Sleep\,Duration}-p_{Academic\,Satisfaction}=0$; Students' duration of sleep and their academic satisfaction are independent (no association).
 
--   $H_a:\mu_A\ne\mu_M$; the mean miles/(US) gallon is different when grouped according to transmission.
+- $H_a:p_{Sleep\,Duration}-p_{Academic\,Satisfaction}\ne0$; Students' duration of sleep and their academic satisfaction are dependent (associated).
 
--   Significance level, $\alpha=5\%$.
+- Significance level, $\alpha=5\%\,\text{or p-value}\,\le\,.05$.
 
--   **Welch's t-test for 2 independent samples**
+- **Pearson's** $\chi^2$-test of independence
 
--   Unknown and unequal variance (see @tbl-levene).
+- Independence.
+
+- Expected counts: Not all expected counts are $\ge 5$ (multiple cells fall below 5; see @tbl-expected).
 
 ```{r}
-#| label: tbl-levene
-#| tbl-cap: Levene's test for homogeneity of variance.
+#| label: tbl-expected
+#| tbl-cap: Expected counts.
+#| warning: false
 
-mtcars_levene <- mtcars |> # call the data
+# Create contingency table using df
+observed <- table(df$Sleep_Duration, df$Academic_Satisfaction)
+
+# Perform chi-squared test
+chi_test <- chisq.test(observed)
+
+# Extract the expected counts
+expected <- chi_test$expected
+
+# View expected counts
+expected |>
+  as_tibble() |>
   mutate(
-    am = factor(
-      am, levels = c(0, 1),
-      labels = c("Automatic", "Manual")
-    )
-  )
-
-leveneTest(mpg ~ am, data = mtcars_levene, center =  mean) |>
-  tidy() |>
+    " " = c("Less_than_6_hours", "6_to_8_hours", "More_than_8_hours")
+  ) |>
+  relocate(" ", .before = 1) |>
   mutate(across(where(is.numeric), ~ round(.x, 2))) |>
   kable()
+#as.data.frame(chi_test$expected) |>
+#  tibble::rownames_to_column(var = "Sleep Duration") |>
+#  mutate(across(where(is.numeric), ~ round(.x, 2))) |>
+#  kable()
 ```
 
--   Both samples follow a normal distribution (see @tbl-shapiro).
+## Results and Interpretation
+
+The bar chart and test statistics are shown on @fig-test.
 
 ```{r}
-#| label: tbl-shapiro
-#| tbl-cap: Shapiro-Wilk normality test.
-
-mtcars_shapiro_m <- mtcars_levene |>
-  filter(am == "Manual") |>
-  select(mpg)
-
-shapiro_m <- shapiro.test(mtcars_shapiro_m$mpg) |>
-  tidy() |>
-  mutate(across(where(is.numeric), ~ round(.x, 2)))
-
-mtcars_shapiro_a <- mtcars_levene |>
-  filter(am == "Automatic") |>
-  select(mpg)
-
-shapiro_a <- shapiro.test(mtcars_shapiro_a$mpg) |>
-  tidy() |>
-  mutate(across(where(is.numeric), ~ round(.x, 2)))
-
-bind_rows(shapiro_a, shapiro_m) |>
-  mutate(
-    transmission = c("Automatic", "Manual")
-  ) |>
-  relocate(transmission, .before =1) |>
-  kable()
-
-```
-
-### Results and Interpretation
-
-The plot and test statistics is shown on @fig-stats.
-
-```{r}
-#| label: fig-stats
-#| fig-cap: Comparison of `mpg` by `am`.
+#| label: fig-test
+#| fig-cap: Bar chart and test statistics.
 #| fig-height: 3
 
-mtcars |> # call the data
-  mutate(
-    am = factor(
-      am, levels = c(0, 1),
-      labels = c("Automatic", "Manual")
-    )
-  ) |>
-  ggbetweenstats(
-    x = am,
-    y = mpg,
-    plot.type = "box", # for boxplot
-    type = "parametric", # for student's t-test
-    var.equal = FALSE, # equal variances
-    centrality.plotting = TRUE # remove mean
-  ) +
-  labs(caption = NULL) # remove caption
+ggbarstats(
+  data = df,
+  x = Sleep_Duration,
+  y = Academic_Satisfaction,
+  type="nonparametric",
+  bf.message = FALSE,
+  legend.title = "Sleep Duration"
+)
 ```
 
-Based on the plot and the *p*-value being less than 5% (*p*-value = .001), we reject the null hypothesis. There is strong evidence that the mean miles/(US) gallon is different when grouped according to transmission. Cars with manual transmission tend to have a higher mean miles/(US) gallon. Thus, manual cars are more fuel efficient compared to automatic cars.
+Based on the bar chart and the $p$-value being less than 5% ($p < 0.001$), we reject the null hypothesis. There is strong evidence that students' duration of sleep affects their academic satisfaction.
