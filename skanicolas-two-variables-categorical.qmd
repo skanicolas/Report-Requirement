@@ -1,13 +1,13 @@
 ---
 title: "Two Variables: Qualitative"
-author: Orville D. Hombrebueno
+author: Shapple Kate Anne A. Nicolas
 date: today
 format:
   html:
     embed-resources: true
 editor: visual
 toc: true
-code-link: false
+code-link: true
 code-fold: true
 cache: true
 ---
@@ -16,7 +16,7 @@ cache: true
 
 ```{r}
 #| label: preliminaries
-#| warning: false
+#| warning: false 
 #| message: false
 
 # load packages
@@ -27,99 +27,138 @@ library(ggstatsplot)
 library(downlit)
 library(broom)
 library(here)
+```
+
+```{r}
+#| label: data
+#| warning: false 
+#| message: false
+
 # load the data
 df <- read_csv(here("data", "My_Data.csv"))
 
-
+df <- df |>
+  mutate(
+    stress_level = factor(
+      stress_level,
+      levels = c("Low", "Moderate", "High"),
+      ordered = TRUE
+    ),
+    travel_mode = factor(
+      travel_mode,
+      levels = c(
+        "Non-Motorized Transport (Walking / Biking)",
+        "Motorized Transport (Tricycle / Jeepney / Motorcycle)"
+      )
+    )
+  )|>
+    select(
+      stress_level,
+      travel_mode,
+    )
 ```
 
-## The Titanic Data Set
+## NVSU_Student_Survey Set
 
-The `Titanic_full` data set of the [{ggstatsplot}]{style="font-family:monospace;"} package is a data frame with 2201 rows and 5 variables.
+The `NVSU_Student_Survey` data set of the [{ggstatsplot}]{style="font-family:monospace;"} package is a data frame with 68 rows and 2 variables.
 
-- `id` Dummy identity number for each person.
+- `travel_mode` Motorized Transport (Tricycle / Jeepney / Motorcycle), Non-Motorized Transport (Walking / Biking).
 
-- `Class` 1st, 2nd, 3rd, Crew.
+- `stress_level` Low, Moderate, High.
 
-- `Sex` Male, Female.
+This data set provides information on the academic habits and lifestyle of undergraduate students at Nueva Vizcaya State University (NVSU), summarized according to daily travel time, weekly study hours, device usage, primary mode of transportation, exam stress level, and internet connection source.
 
-- `Age` Child, Adult.
-
-- `Survived` No, Yes.
-
-This data set provides information on the fate of passengers on the fatal maiden voyage of the ocean liner Titanic, summarized according to economic status (class), sex, age and survival.
-
-The first 6 rows of the titanic data set are shown in @tbl-titanic.
+The first 6 rows of the level data set are shown in @tbl-level.
 
 ```{r}
-#| label: tbl-titanic
+#| label: tbl-level
 #| warning: false
 #| message: false
 #| tbl-cap: "The first 6 observations of the data set."
 
-titanic |>
+df |>
   head() |> # getting the first six rows of the data
-  kable() # creating a table
+  kable(
+    col.names = c("Stress Level", "Mode of Transportation")
+  ) # creating a table
 ```
 
-## Descriptive Statistics
+Descriptive Statistics
 
-The frequency distribution of `Survived` when grouped according to `Sex` is shown in @tbl-summary. Most of the passengers are male. The majority of female passengers survived, whereas the majority of male passengers did not. Nonetheless, the number of survived passengers for both female and male are close, that is 344 and 367 respectively.
+The cross-tabulation of `stress_level` when grouped according to `travel_mode` is shown in @tbl-level Most of the students use motorized transport, and the distribution of stress levels across transport modes can be observed in the table.
 
 ```{r}
+
 #| label: tbl-summary
-#| tbl-cap: "Summary statistics of `Survived` when grouped according to `Sex`."
+#| tbl-cap: "Summary statistics of `stress_level` when grouped according to `travel_mode`."
 #| message: false
 
-titanic |> 
-  tbl_summary(
-    by = Sex,
-    include = Survived
+df |> 
+
+#  tbl_summary(
+#    by = stress_level,
+#    include = travel_mode
+    tbl_cross(
+      row = stress_level,
+      col = travel_mode,
+      percent = "column",
+      margin = c("row", "column"),
+      label = list(
+        stress_level ~ "Level of Stress",
+        travel_mode ~ "Mode of Transportation"
+      )
   )
+
 ```
 
 # Hypothesis Testing
 
 ## Research Question
 
-Does a passenger's sex affect their survival status?
+Does students' mode of transportation affect their level of stress?
 
 ## Hypothesis and Test Statistics
 
-- $H_0:p_{Survived}-p_{Sex}=0$; passenger's sex does not affect their survival status.
+- $H_0:p_{Travel\,Mode}-p_{Stress\,Level}=0$; Students' mode of transportation and their level of stress are independent (no association).
 
-- $H_a:p_{Survived}-p_{Sex}\ne0$; passenger's sex affects their survival status.
+- $H_a:p_{Travel\,Mode}-p_{Stress\,Level}\ne0$; Students' mode of transportation and their level of stress are dependent (associated).
 
-- Significance level, $\alpha=5\%$.
+- Significance level, $\alpha=5\%\,\text{or p-value}\,\le\,.05$.
 
 - **Pearson's** $\chi^2$-test of independence
 
 - Independence.
 
-- Expected counts: all expected counts are $\ge5$ (see @tbl-expected).
+- Expected counts: Not all expected counts are $\lt5$ (the 'Low' stress category expected counts are below 5; see @tbl-expected).
 
 ```{r}
 #| label: tbl-expected
 #| tbl-cap: Expected counts.
+#| warning: false
 
-# Create contingency table
-observed <- table(titanic$Survived, titanic$Sex)
+# Create contingency table using df
+observed <- table(df$stress_level, df$travel_mode)
 
 # Perform chi-squared test
 chi_test <- chisq.test(observed)
 
-# Extract the expected counts
+# Extract the expected counts (this creates the 'expected' object)
 expected <- chi_test$expected
 
-# View expected counts
+# Convert expected counts to data frame safely preserving row names
 expected |>
   as_tibble() |>
   mutate(
-    " " = c("No", "Yes")
+    " " = c("Low", "Moderate", "High")
   ) |>
   relocate(" ", .before = 1) |>
   mutate(across(where(is.numeric), ~ round(.x, 2))) |>
   kable()
+
+#as.data.frame(chi_test$expected) |>
+#  tibble::rownames_to_column(var = "Stress Level") |>
+#  mutate(across(where(is.numeric), ~ round(.x, 2))) |>
+#  kable()
 ```
 
 ## Results and Interpretation
@@ -128,16 +167,17 @@ The bar chart and test statistics are shown on @fig-test.
 
 ```{r}
 #| label: fig-test
-#| fig-cap: Pie chart and test statistics.
+#| fig-cap: Bar chart and test statistics.
 #| fig-height: 3
 
 ggbarstats(
-  data = titanic,
-  x = Survived,
-  y = Sex,
+  data = df,
+  x = travel_mode,
+  y = stress_level,
+  type="nonparametric",
   bf.message = FALSE,
-  legend.title = "Survived?"
+  legend.title = "Mode of Transportation"
 )
 ```
 
-Based on the bar chart and the *p*-value being lesser than 5% (*p*-value = .001), we reject the null hypothesis. There is a strong evidence that passenger's sex affects their survival status. Additionally, for both females and males, the survival rates were significantly different than 50% as indicated by a goodness of fit test for each gender.
+Based on the bar chart and the $p$-value being greater than 5% ($p = 0.96$), we fail to reject the null hypothesis. There is insufficient evidence to conclude that students' mode of transportation affects their level of stress.

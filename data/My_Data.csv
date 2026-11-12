@@ -1,4 +1,4 @@
-Timestamp,How many minutes does it usually take you to travel from your accommodation to the NVSU campus?,"Aside from regular class hours, how many hours do you spend studying or working on school assignments per week?","How many electronic devices (e.g., smartphone, laptop, tablet) do you actively use for your studies?",How do you primarily travel to the NVSU campus?,How would you rate your typical stress level during major examination weeks?,What is your main source of internet connection for schoolwork?
+Timestamp,travel_time,study_hours,device_count,travel_mode,stress_level,internet_source
 10/22/2026 08:20:48,Less than 15 minutes,Less than 5 hours,2 devices,Motorized Transport (Tricycle / Jeepney / Motorcycle),Moderate,Fixed Wi-Fi / Broadband / Campus Wi-Fi
 10/22/2026 11:25:30,Less than 15 minutes,5 to 10 hours,1 device,Non-Motorized Transport (Walking / Biking),High,Fixed Wi-Fi / Broadband / Campus Wi-Fi
 10/22/2026 12:09:15,More than 30 minutes,5 to 10 hours,2 devices,Motorized Transport (Tricycle / Jeepney / Motorcycle),High,Fixed Wi-Fi / Broadband / Campus Wi-Fi
