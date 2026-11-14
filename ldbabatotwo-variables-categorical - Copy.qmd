@@ -1,6 +1,6 @@
 ---
 title: "Two Variables: Quantitative and Qualitative"
-author: Orville D. Hombrebueno
+author: Shapple Kate Anne A. Nicolas
 date: today
 format:
   html:
@@ -27,12 +27,18 @@ library(gtsummary)
 library(ggstatsplot)
 library(downlit)
 library(broom)
+<<<<<<< HEAD:ldbabatotwo-variables-categorical - Copy.qmd
 library(car)
 library(here)
+=======
+library(here)
+#library(car)
+>>>>>>> cd74121a5cfb1c9178c21c971daa69458ab32600:skanicolas-two-variables-numcat.qmd
 ```
 
 ```{r}
 #| label: data
+<<<<<<< HEAD:ldbabatotwo-variables-categorical - Copy.qmd
 #| warning: false
 #| message: false
 df <- read_csv(here("data", "my_dataset_enso.csv"))
@@ -73,50 +79,89 @@ The first 6 rows of the data set are shown in @tbl-satisfaction
 
 ```{r}
 #| label: tbl-satisfaction
+=======
+#| warning: false 
+#| message: false
+
+# load the data
+df <- read_csv(here("data", "My_Data.csv"))
+
+df <- df |>
+  mutate(
+    internet_source = factor(internet_source),
+    study_hours_num = case_when(
+      study_hours == "Less than 5 hours" ~ 3,
+      study_hours == "5 to 10 hours" ~ 7.5,
+      study_hours == "More than 10 hours" ~ 12,
+      TRUE ~ 5
+    )
+  ) |>
+  select(
+    study_hours_num,
+    study_hours,
+    internet_source
+  )
+```
+
+The `NVSU_Student_Survey` data set is a data frame with 68 rows and 2 main variables.
+
+- `study_hours`: Less than 5 hours, 5 to 10 hours, More than 10 hours (converted to numeric values for analysis).
+
+- `internet_source`: Fixed Wi-Fi / Broadband / Campus Wi-Fi, Mobile Data / Cellular.
+
+This data set provides information on student study habits and internet connectivity sources at Nueva Vizcaya State University (NVSU). The first 6 rows of the data set are shown in @tbl-hours.
+
+```{r}
+#| label: tbl-hours
+>>>>>>> cd74121a5cfb1c9178c21c971daa69458ab32600:skanicolas-two-variables-numcat.qmd
 #| warning: false
 #| message: false
 #| error: false
 #| tbl-cap: "The first 6 observations of the data set."
 
+<<<<<<< HEAD:ldbabatotwo-variables-categorical - Copy.qmd
 df |> # call the data
   head() |> # get the first six rows of the data
   kable(
     col.names = c("Academic Satisfaction", "Duration of Sleep")
   ) # create a table
+=======
+df |>
+  head() |> # getting the first six rows of the data
+  kable(
+    col.names = c("Study Hours (Numeric)", "Study Hours (Category)", "Internet Source")
+  ) # creating a table
+>>>>>>> cd74121a5cfb1c9178c21c971daa69458ab32600:skanicolas-two-variables-numcat.qmd
 ```
 
 ## Descriptive Statistics
 
-The mean, standard deviation, minimum, and maximum of `mpg` when grouped according to `am` are shown in @tbl-summary. There is a total of 32 observations.
+The summary statistics of study_hours_num when grouped according to internet_source are shown in @tbl-summary.
 
 ```{r}
 #| label: tbl-summary
-#| tbl-cap: "Summary statistics."
+#| tbl-cap: "Summary statistics of study hours grouped by internet source."
 #| message: false
 
-mtcars |> # call the data
-  mutate(
-    am = factor(
-      am, levels = c(0, 1),
-      labels = c("Automatic", "Manual")
-    )
+df |> 
+  tbl_summary(
+    by = internet_source,
+    include = study_hours_num,
+    statistic = list(all_continuous() ~ "{mean} ({sd})"),
+    label = list(study_hours_num ~ "Estimated Study Hours")
   ) |>
-  tbl_summary( # create a table
-    by = am, # grouping
-    include = c(mpg, am), # select variables
-    statistic = all_continuous() ~ "{mean} ± {sd} ({min} - {max})", # descriptive statistics
-    digits = all_continuous() ~ 2 # no. of digits (rounding)
-  )
+  add_overall()
 ```
 
 # Hypothesis Testing
 
 ### Research Question
 
-Is there a significant difference in miles/(US) gallon when grouped according to transmission?
+Do students using fixed broadband versus mobile data differ significantly in their estimated weekly study hours?
 
 ### Hypothesis and Test Statistics
 
+<<<<<<< HEAD:ldbabatotwo-variables-categorical - Copy.qmd
 - $H_0:\mu_A=\mu_M$; the mean miles/(US) gallon is the same when grouped according to transmission.
 
 - $H_a:\mu_A\ne\mu_M$; the mean miles/(US) gallon is different when grouped according to transmission.
@@ -126,54 +171,57 @@ Is there a significant difference in miles/(US) gallon when grouped according to
 - **Welch's t-test for 2 independent samples**
 
 - Unknown and unequal variance (see @tbl-levene).
+=======
+- $H_0:\mu_A=\mu_M$; The distribution of weekly study hours is identical across internet source groups.
+
+- $H_a:\mu_A\ne\mu_M$; Weekly study hours differ significantly between internet source groups.
+
+- Significance level, $\alpha=5\%\,\text{or p-value}\,\le\,0.05$.
+
+- **Mann-Whitney** $U$ test (non-parametric numerical-categorical test).
+>>>>>>> cd74121a5cfb1c9178c21c971daa69458ab32600:skanicolas-two-variables-numcat.qmd
 
 ```{r}
 #| label: tbl-levene
 #| tbl-cap: Levene's test for homogeneity of variance.
 
-mtcars_levene <- mtcars |> # call the data
-  mutate(
-    am = factor(
-      am, levels = c(0, 1),
-      labels = c("Automatic", "Manual")
-    )
-  )
-
-leveneTest(mpg ~ am, data = mtcars_levene, center =  mean) |>
+car::leveneTest(study_hours_num ~ internet_source, data = df, center = mean) |>
   tidy() |>
   mutate(across(where(is.numeric), ~ round(.x, 2))) |>
   kable()
 ```
 
+<<<<<<< HEAD:ldbabatotwo-variables-categorical - Copy.qmd
 - Both samples follow a normal distribution (see @tbl-shapiro).
 
+=======
+>>>>>>> cd74121a5cfb1c9178c21c971daa69458ab32600:skanicolas-two-variables-numcat.qmd
 ```{r}
 #| label: tbl-shapiro
 #| tbl-cap: Shapiro-Wilk normality test.
 
-mtcars_shapiro_m <- mtcars_levene |>
-  filter(am == "Manual") |>
-  select(mpg)
+df_fixed <- df |>
+  filter(internet_source == "Fixed Wi-Fi / Broadband / Campus Wi-Fi") |>
+  select(study_hours_num)
 
-shapiro_m <- shapiro.test(mtcars_shapiro_m$mpg) |>
+shapiro_fixed <- shapiro.test(df_fixed$study_hours_num) |>
   tidy() |>
   mutate(across(where(is.numeric), ~ round(.x, 2)))
 
-mtcars_shapiro_a <- mtcars_levene |>
-  filter(am == "Automatic") |>
-  select(mpg)
+df_mobile <- df |>
+  filter(internet_source == "Mobile Data / Cellular") |>
+  select(study_hours_num)
 
-shapiro_a <- shapiro.test(mtcars_shapiro_a$mpg) |>
+shapiro_mobile <- shapiro.test(df_mobile$study_hours_num) |>
   tidy() |>
   mutate(across(where(is.numeric), ~ round(.x, 2)))
 
-bind_rows(shapiro_a, shapiro_m) |>
+bind_rows(shapiro_fixed, shapiro_mobile) |>
   mutate(
-    transmission = c("Automatic", "Manual")
+    internet_source_group = c("Fixed Wi-Fi / Broadband", "Mobile Data / Cellular")
   ) |>
-  relocate(transmission, .before =1) |>
+  relocate(internet_source_group, .before = 1) |>
   kable()
-
 ```
 
 ### Results and Interpretation
@@ -182,25 +230,18 @@ The plot and test statistics is shown on @fig-stats.
 
 ```{r}
 #| label: fig-stats
-#| fig-cap: Comparison of `mpg` by `am`.
+#| fig-cap: Comparison of study hours by internet source.
 #| fig-height: 3
 
-mtcars |> # call the data
-  mutate(
-    am = factor(
-      am, levels = c(0, 1),
-      labels = c("Automatic", "Manual")
-    )
-  ) |>
-  ggbetweenstats(
-    x = am,
-    y = mpg,
-    plot.type = "box", # for boxplot
-    type = "parametric", # for student's t-test
-    var.equal = FALSE, # equal variances
-    centrality.plotting = TRUE # remove mean
-  ) +
-  labs(caption = NULL) # remove caption
+ggbetweenstats(
+  data = df,
+  x = internet_source,
+  y = study_hours_num,
+  type = "nonparametric",
+  bf.message = FALSE,
+  xlab = "Internet Source",
+  ylab = "Estimated Weekly Study Hours"
+)
 ```
 
-Based on the plot and the *p*-value being less than 5% (*p*-value = .001), we reject the null hypothesis. There is strong evidence that the mean miles/(US) gallon is different when grouped according to transmission. Cars with manual transmission tend to have a higher mean miles/(US) gallon. Thus, manual cars are more fuel efficient compared to automatic cars.
+Based on the plot and the *p*-value being greater than 5% (*p*-value = .060), we fail to reject the null hypothesis. There is insufficient evidence that the mean estimated weekly study hours are different when grouped according to internet source. Students using fixed broadband connections and those using mobile data tend to report comparable weekly study hours. Thus, primary internet source does not significantly alter weekly study commitment in this sample.

@@ -1,0 +1,167 @@
+---
+title: "Two Variables: Qualitative"
+author: Orville D. Hombrebueno
+date: today
+format:
+  html:
+    embed-resources: true
+editor: visual
+toc: true
+code-link: false
+code-fold: true
+cache: true
+---
+
+# The Data
+
+```{r}
+#| label: preliminaries
+#| warning: false 
+#| message: false
+
+# load packages
+library(tidyverse) 
+library(knitr)
+library(gtsummary)
+library(ggstatsplot)
+library(downlit)
+library(broom)
+library(here)
+```
+
+```{r}
+#| label: data
+#| warning: false 
+#| message: false
+
+# load the data
+df <- read_csv(here("data", "My_Data.csv"))
+
+df <- df |>
+  mutate(
+    stress_level = factor(
+      stress_level,
+      levels = c("Low", "Moderate", "High"),
+      ordered = TRUE
+    ),
+    travel_mode = factor(
+      travel_mode,
+      levels = c(
+        "Non-Motorized Transport (Walking / Biking)",
+        "Motorized Transport (Tricycle / Jeepney / Motorcycle)"
+      )
+    )
+  )|>
+    select(
+      stress_level,
+      travel_mode,
+    )
+```
+
+## NVSU_Student_Survey Set
+
+The `NVSU_Student_Survey` data set of the [{ggstatsplot}]{style="font-family:monospace;"} package is a data frame with 68 rows and 2 variables.
+
+- `travel_mode` Motorized Transport (Tricycle / Jeepney / Motorcycle), Non-Motorized Transport (Walking / Biking).
+
+- `stress_level` Low, Moderate, High.
+
+This data set provides information on the academic habits and lifestyle of undergraduate students at Nueva Vizcaya State University (NVSU), summarized according to daily travel time, weekly study hours, device usage, primary mode of transportation, exam stress level, and internet connection source.
+
+The first 6 rows of the level data set are shown in @tbl-level.
+
+```{r}
+#| label: tbl-level
+#| warning: false
+#| message: false
+#| tbl-cap: "The first 6 observations of the data set."
+
+df |>
+  head() |> # getting the first six rows of the data
+  kable(
+    col.names = c("Stress Level", "Mode of Transportation")
+  ) # creating a table
+```
+
+## Descriptive Statistics
+
+#The frequency distribution of `Survived` when grouped according to `Sex` is shown in @tbl-summary. Most of the passengers are male. The majority of female passengers survived, whereas the majority of male passengers did not. Nonetheless, the number of survived passengers for both female and male are close, that is 344 and 367 respectively.
+
+```{r}
+
+#| label: tbl-summary
+#| tbl-cap: "Summary statistics of `Survived` when grouped according to `Sex`."
+#| message: false
+
+titanic |> 
+
+  tbl_summary(
+    by = Sex,
+    include = Survived
+
+  )
+
+```
+# Hypothesis Testing
+
+## Research Question
+
+Does a passenger's sex affect their survival status?
+
+## Hypothesis and Test Statistics
+
+- $H_0:p_{Survived}-p_{Sex}=0$; passenger's sex does not affect their survival status.
+
+- $H_a:p_{Survived}-p_{Sex}\ne0$; passenger's sex affects their survival status.
+
+- Significance level, $\alpha=5\%$.
+
+- **Pearson's** $\chi^2$-test of independence
+
+- Independence.
+
+- Expected counts: all expected counts are $\ge5$ (see @tbl-expected).
+
+```{r}
+#| label: tbl-expected
+#| tbl-cap: Expected counts.
+
+# Create contingency table using df
+observed <- table(df$stress_level, df$travel_mode)
+
+# Perform chi-squared test
+chi_test <- chisq.test(observed)
+
+# Extract the expected counts
+expected <- chi_test$expected
+
+# View expected counts
+expected |>
+  as_tibble() |>
+  mutate(
+    " " = c("Low", "Moderate", "High")
+  ) |>
+  relocate(" ", .before = 1) |>
+  mutate(across(where(is.numeric), ~ round(.x, 2))) |>
+  kable()
+```
+
+## Results and Interpretation
+
+The bar chart and test statistics are shown on @fig-test.
+
+```{r}
+#| label: fig-test
+#| fig-cap: Bar chart and test statistics.
+#| fig-height: 4
+
+ggbarstats(
+  data = df,
+  x = stress_level,
+  y = travel_mode,
+  bf.message = FALSE,
+  legend.title = "Stress Level"
+)
+```
+
+Based on the bar chart and the *p*-value being lesser than 5% (*p*-value = .001), we reject the null hypothesis. There is a strong evidence that passenger's sex affects their survival status. Additionally, for both females and males, the survival rates were significantly different than 50% as indicated by a goodness of fit test for each gender.
