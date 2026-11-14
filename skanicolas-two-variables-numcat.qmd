@@ -111,7 +111,7 @@ Do students using fixed broadband versus mobile data differ significantly in the
 
 - Significance level, $\alpha=5\%\,\text{or p-value}\,\le\,0.05$.
 
-- **Mann-Whitney $U$ test (non-parametric numerical-categorical test).**
+- **Mann-Whitney** $U$ test (non-parametric numerical-categorical test).
 
 ```{r}
 #| label: tbl-levene
@@ -122,6 +122,7 @@ car::leveneTest(study_hours_num ~ internet_source, data = df, center = mean) |>
   mutate(across(where(is.numeric), ~ round(.x, 2))) |>
   kable()
 ```
+
 ```{r}
 #| label: tbl-shapiro
 #| tbl-cap: Shapiro-Wilk normality test.
