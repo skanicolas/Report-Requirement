@@ -33,83 +33,73 @@ library(here)
 
 ```{r}
 #| label: data
-#| warning: false
+#| warning: false 
 #| message: false
+
+# load the data
 df <- read_csv(here("data", "my_dataset_enso.csv"))
 
 df <- df |>
   mutate(
-    # 1. First Ordinal Variable: Academic Satisfaction
     Academic_Satisfaction = factor(
       Academic_Satisfaction,
       levels = c("Low_satisfaction", "Moderate_Satisfaction", "High_Satisfaction"),
       ordered = TRUE
     ),
-    
-    # 2. Second Ordinal Variable: Sleep Duration
-    Sleep_Duration = factor(
-      Sleep_Duration,
-      levels = c("Less_than_6_hours", "6_to_8_hours", "More_than_8_hours"),
-      ordered = TRUE
+    study_hours_num = case_when(
+      Sleep_Duration == "Less_than_6_hours" ~ 5.0,
+      Sleep_Duration == "6_to_8_hours" ~ 7.0,
+      Sleep_Duration == "More_than_8_hours" ~ 9.0,
+      TRUE ~ 6.0
     )
   ) |>
   select(
-    Academic_Satisfaction,
-    Sleep_Duration
+    study_hours_num,
+    Academic_Satisfaction
   )
 ```
+The NVSU_Student_Survey data set is a data frame with 68 rows and 2 main variables.
 
-## NVSU_Student_Survey
+- `study_hours_num`: Estimated study/sleep hours derived from sleep duration (numeric representation).
 
-The 'NVSU_Student_Survey' data set is a data frame with 68 rows and 2 variables.
+- `Academic_Satisfaction`: Low_satisfaction, Moderate_Satisfaction, High_Satisfaction.
 
-- 'Living_Arrangement' With_Family, Independent_Living.
-
-- 'Academic_Satisfaction' Low_satisfaction, Moderate_Satisfaction, High_Satisfaction.
-
-This data set provides information on student profiles at Nueva Vizcaya State University (NVSU), summarized according to living arrangements and academic satisfaction.
-
-The first 6 rows of the data set are shown in @tbl-satisfaction
+This data set provides information on student profiles and satisfaction levels at Nueva Vizcaya State University (NVSU). The first 6 rows of the data set are shown in @tbl-hours.
 
 ```{r}
-#| label: tbl-satisfaction
+#| label: tbl-hours
 #| warning: false
 #| message: false
 #| error: false
 #| tbl-cap: "The first 6 observations of the data set."
 
-df |> # call the data
-  head() |> # get the first six rows of the data
-  kable(
-    col.names = c("Academic Satisfaction", "Duration of Sleep")
-  ) # create a table
+df |> 
+  head() |>  
+  (\(x) kable(x, col.names = c("Study Hours (Numeric)",
+                               "Academic Satisfaction")
+              )
+   )()
 ```
 
 ## Descriptive Statistics
 
-The frequency distribution of `Academic_Satisfaction` when grouped according to `Sleep_Duration` is shown in @tbl-satisfaction. Most of the students report moderate satisfaction. The majority of students with lower sleep durations cluster in specific satisfaction tiers, whereas those with balanced sleep show wider distributions across categories.
+The summary statistics of study_hours_num when grouped according to Academic_Satisfaction are shown in @tbl-summary.
 
 ```{r}
-
 #| label: tbl-summary
-#| tbl-cap: "Summary statistics of `Academic_Satisfaction` when grouped according to `Sleep_Duration`."
+#| tbl-cap: "Summary statistics of Study Hours grouped by Academic Satisfaction."
 #| message: false
 
-df |> 
-
-#  tbl_summary(
-#    by = Academic_Satisfaction,
-#    include = Sleep_Duration
-    tbl_cross(
-      row = Academic_Satisfaction,
-      col = Sleep_Duration,
-      percent = "column",
-      margin = c("row", "column"),
-      label = list(
-        Academic_Satisfaction ~ "Academic Satisfaction",
-        Sleep_Duration ~ "Duration of Sleep"
-      )
-  )
+df |>
+  group_by(Academic_Satisfaction) |>
+  summarise(
+    Mean = round(mean(study_hours_num, na.rm = TRUE), 2),
+    SD = round(sd(study_hours_num, na.rm = TRUE), 2),
+    Min = min(study_hours_num, na.rm = TRUE),
+    Max = max(study_hours_num, na.rm = TRUE),
+    N = n()
+  ) |>
+  kable(col.names = c("Academic Satisfaction", "Mean", "SD", "Min", "Max", "N"))
 
 ```
 
@@ -117,68 +107,75 @@ df |>
 
 ## Research Question
 
-Does the students' duration of sleep affect their academic satisfaction?
+Do students with varying levels of academic satisfaction differ significantly in their estimated study/sleep hours?
 
 ## Hypothesis and Test Statistics
 
-- $H_0:p_{Sleep\,Duration}-p_{Academic\,Satisfaction}=0$; Students' duration of sleep and their academic satisfaction are independent (no association).
+- $H_0:$ The distribution of study/sleep hours is identical across academic satisfaction groups.
 
-- $H_a:p_{Sleep\,Duration}-p_{Academic\,Satisfaction}\ne0$; Students' duration of sleep and their academic satisfaction are dependent (associated).
+- $H_a:$ Study/sleep hours differ significantly between academic satisfaction groups.
 
 - Significance level, $\alpha=5\%\,\text{or p-value}\,\le\,.05$.
 
-- **Pearson's** $\chi^2$-test of independence
-
-- Independence.
-
-- Expected counts: Not all expected counts are $\ge 5$ (multiple cells fall below 5; see @tbl-expected).
+- **Kruskal-Wallis test** (non-parametric numerical-categorical test).
 
 ```{r}
-#| label: tbl-expected
-#| tbl-cap: Expected counts.
-#| warning: false
+#| label: tbl-levene
+#| tbl-cap: Levene's test for homogeneity of variance.
 
-# Create contingency table using df
-observed <- table(df$Sleep_Duration, df$Academic_Satisfaction)
-
-# Perform chi-squared test
-chi_test <- chisq.test(observed)
-
-# Extract the expected counts
-expected <- chi_test$expected
-
-# View expected counts
-expected |>
-  as_tibble() |>
-  mutate(
-    " " = c("Less_than_6_hours", "6_to_8_hours", "More_than_8_hours")
-  ) |>
-  relocate(" ", .before = 1) |>
+car::leveneTest(study_hours_num ~ Academic_Satisfaction, data = df, center = mean) |>
+  tidy() |>
   mutate(across(where(is.numeric), ~ round(.x, 2))) |>
   kable()
-#as.data.frame(chi_test$expected) |>
-#  tibble::rownames_to_column(var = "Sleep Duration") |>
-#  mutate(across(where(is.numeric), ~ round(.x, 2))) |>
-#  kable()
 ```
 
-## Results and Interpretation
-
-The bar chart and test statistics are shown on @fig-test.
 
 ```{r}
-#| label: fig-test
-#| fig-cap: Bar chart and test statistics.
+#| label: tbl-shapiro
+#| tbl-cap: Shapiro-Wilk normality test.
+
+safe_shapiro <- function(x) {
+  if (length(unique(x)) <= 1) {
+    tibble(statistic = NA_real_, p.value = NA_real_, method = "All values identical (Zero Variance)")
+  } else {
+    tryCatch({
+      shapiro.test(x) |> tidy() |> mutate(across(where(is.numeric), ~ round(.x, 2)))
+    }, error = function(e) {
+      tibble(statistic = NA_real_, p.value = NA_real_, method = "Error in test")
+    })
+  }
+}
+
+shapiro_low <- safe_shapiro(df |> filter(Academic_Satisfaction == "Low_satisfaction") |> pull(study_hours_num))
+shapiro_mod <- safe_shapiro(df |> filter(Academic_Satisfaction == "Moderate_Satisfaction") |> pull(study_hours_num))
+shapiro_high <- safe_shapiro(df |> filter(Academic_Satisfaction == "High_Satisfaction") |> pull(study_hours_num))
+
+bind_rows(shapiro_low, shapiro_mod, shapiro_high) |>
+  mutate(
+    satisfaction_group = c("Low Satisfaction", "Moderate Satisfaction", "High Satisfaction")
+  ) |>
+  relocate(satisfaction_group, .before = 1) |>
+  kable()
+```
+
+##Results and Interpretation
+
+The plot and test statistics is shown on @fig-stats.
+
+```{r}
+#| label: fig-stats
+#| fig-cap: Comparison of study hours by academic satisfaction.
 #| fig-height: 3
 
-ggbarstats(
+ggbetweenstats(
   data = df,
-  x = Sleep_Duration,
-  y = Academic_Satisfaction,
-  type="nonparametric",
+  x = Academic_Satisfaction,
+  y = study_hours_num,
+  type = "nonparametric",
   bf.message = FALSE,
-  legend.title = "Sleep Duration"
+  xlab = "Academic Satisfaction",
+  ylab = "Estimated Study Hours"
 )
 ```
 
-Based on the bar chart and the $p$-value being less than 5% ($p < 0.001$), we reject the null hypothesis. There is strong evidence that students' duration of sleep affects their academic satisfaction.
+Based on the plot and the p-value being less than 5% ($p < 0.001$), we reject the null hypothesis. There is strong evidence that estimated study/sleep hours differ significantly when grouped according to academic satisfaction levels. Students reporting higher satisfaction tend to report distinct patterns in their daily rest and study commitments compared to those with lower satisfaction.
