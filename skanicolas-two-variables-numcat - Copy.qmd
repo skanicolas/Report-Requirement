@@ -1,0 +1,196 @@
+---
+title: "Two Variables: Quantitative and Qualitative"
+author: Orville D. Hombrebueno
+date: today
+format:
+  html:
+    embed-resources: true
+editor: visual
+toc: true
+code-link: true
+code-fold: true
+cache: true
+---
+
+# The Data
+
+```{r}
+#| label: preliminaries
+#| warning: false
+#| message: false
+
+# install packages: install.packages("package")
+# load packages
+library(tidyverse) 
+library(knitr)
+library(gtsummary)
+library(ggstatsplot)
+library(downlit)
+library(broom)
+library(car)
+
+# load data
+data(mtcars)
+```
+
+## Motor Trend Car Road Tests
+
+The data was extracted from the 1974 Motor Trend US magazine, and comprises fuel consumption and 10 aspects of automobile design and performance for 32 automobiles (1973–74 models).
+
+A data frame with 32 observations on 11 (numeric) variables.
+
+-   `mpg` Miles/(US) gallon
+
+-   `cyl` Number of cylinders
+
+-   `disp` Displacement (cu.in.)
+
+-   `hp` Gross horsepower
+
+-   `drat` Rear axle ratio
+
+-   `wt` Weight (1000 lbs)
+
+-   `qsec` 1/4 mile time
+
+-   `vs` Engine (0 = V-shaped, 1 = straight)
+
+-   `am` Transmission (0 = automatic, 1 = manual)
+
+-   `gear` Number of forward gears
+
+-   `carb` Number of carburetors
+
+The first 6 rows of the data set are shown in @tbl-mtcars
+
+```{r}
+#| label: tbl-mtcars
+#| warning: false
+#| message: false
+#| error: false
+#| tbl-cap: "The first 6 observations of the data set."
+
+mtcars |> # call the data
+  head() |> # get the first six rows of the data
+  kable() # create a table
+```
+
+## Descriptive Statistics
+
+The mean, standard deviation, minimum, and maximum of `mpg` when grouped according to `am` are shown in @tbl-summary. There is a total of 32 observations.
+
+```{r}
+#| label: tbl-summary
+#| tbl-cap: "Summary statistics."
+#| message: false
+
+mtcars |> # call the data
+  mutate(
+    am = factor(
+      am, levels = c(0, 1),
+      labels = c("Automatic", "Manual")
+    )
+  ) |>
+  tbl_summary( # create a table
+    by = am, # grouping
+    include = c(mpg, am), # select variables
+    statistic = all_continuous() ~ "{mean} ± {sd} ({min} - {max})", # descriptive statistics
+    digits = all_continuous() ~ 2 # no. of digits (rounding)
+  )
+```
+
+# Hypothesis Testing
+
+### Research Question
+
+Is there a significant difference in miles/(US) gallon when grouped according to transmission?
+
+### Hypothesis and Test Statistics
+
+-   $H_0:\mu_A=\mu_M$; the mean miles/(US) gallon is the same when grouped according to transmission.
+
+-   $H_a:\mu_A\ne\mu_M$; the mean miles/(US) gallon is different when grouped according to transmission.
+
+-   Significance level, $\alpha=5\%$.
+
+-   **Welch's t-test for 2 independent samples**
+
+-   Unknown and unequal variance (see @tbl-levene).
+
+```{r}
+#| label: tbl-levene
+#| tbl-cap: Levene's test for homogeneity of variance.
+
+mtcars_levene <- mtcars |> # call the data
+  mutate(
+    am = factor(
+      am, levels = c(0, 1),
+      labels = c("Automatic", "Manual")
+    )
+  )
+
+leveneTest(mpg ~ am, data = mtcars_levene, center =  mean) |>
+  tidy() |>
+  mutate(across(where(is.numeric), ~ round(.x, 2))) |>
+  kable()
+```
+
+-   Both samples follow a normal distribution (see @tbl-shapiro).
+
+```{r}
+#| label: tbl-shapiro
+#| tbl-cap: Shapiro-Wilk normality test.
+
+mtcars_shapiro_m <- mtcars_levene |>
+  filter(am == "Manual") |>
+  select(mpg)
+
+shapiro_m <- shapiro.test(mtcars_shapiro_m$mpg) |>
+  tidy() |>
+  mutate(across(where(is.numeric), ~ round(.x, 2)))
+
+mtcars_shapiro_a <- mtcars_levene |>
+  filter(am == "Automatic") |>
+  select(mpg)
+
+shapiro_a <- shapiro.test(mtcars_shapiro_a$mpg) |>
+  tidy() |>
+  mutate(across(where(is.numeric), ~ round(.x, 2)))
+
+bind_rows(shapiro_a, shapiro_m) |>
+  mutate(
+    transmission = c("Automatic", "Manual")
+  ) |>
+  relocate(transmission, .before =1) |>
+  kable()
+
+```
+
+### Results and Interpretation
+
+The plot and test statistics is shown on @fig-stats.
+
+```{r}
+#| label: fig-stats
+#| fig-cap: Comparison of `mpg` by `am`.
+#| fig-height: 3
+
+mtcars |> # call the data
+  mutate(
+    am = factor(
+      am, levels = c(0, 1),
+      labels = c("Automatic", "Manual")
+    )
+  ) |>
+  ggbetweenstats(
+    x = am,
+    y = mpg,
+    plot.type = "box", # for boxplot
+    type = "parametric", # for student's t-test
+    var.equal = FALSE, # equal variances
+    centrality.plotting = TRUE # remove mean
+  ) +
+  labs(caption = NULL) # remove caption
+```
+
+Based on the plot and the *p*-value being less than 5% (*p*-value = .001), we reject the null hypothesis. There is strong evidence that the mean miles/(US) gallon is different when grouped according to transmission. Cars with manual transmission tend to have a higher mean miles/(US) gallon. Thus, manual cars are more fuel efficient compared to automatic cars.
