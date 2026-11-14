@@ -776,11 +776,7 @@
     },
     "V8": {
       "Package": "V8",
-<<<<<<< HEAD
-      "Version": "8.2.1",
-=======
       "Version": "8.2.0",
->>>>>>> cd74121a5cfb1c9178c21c971daa69458ab32600
       "Source": "Repository",
       "Type": "Package",
       "Title": "Embedded JavaScript and WebAssembly Engine for R",
@@ -3181,27 +3177,16 @@
     },
     "gargle": {
       "Package": "gargle",
-<<<<<<< HEAD
-      "Version": "1.7.0",
-      "Source": "Repository",
-      "Title": "Utilities for Working with Google APIs",
-      "Authors@R": "c( person(\"Jennifer\", \"Bryan\", , \"jenny@posit.co\", role = c(\"aut\", \"cre\"), comment = c(ORCID = \"0000-0002-6983-2759\")), person(\"Craig\", \"Citro\", , \"craigcitro@google.com\", role = \"aut\"), person(\"Hadley\", \"Wickham\", , \"hadley@posit.co\", role = \"aut\", comment = c(ORCID = \"0000-0003-4757-117X\")), person(\"Google Inc\", role = \"cph\"), person(\"Posit Software, PBC\", role = c(\"cph\", \"fnd\"), comment = c(ROR = \"03wc8by49\")) )",
-=======
       "Version": "1.6.1",
       "Source": "Repository",
       "Title": "Utilities for Working with Google APIs",
       "Authors@R": "c( person(\"Jennifer\", \"Bryan\", , \"jenny@posit.co\", role = c(\"aut\", \"cre\"), comment = c(ORCID = \"0000-0002-6983-2759\")), person(\"Craig\", \"Citro\", , \"craigcitro@google.com\", role = \"aut\"), person(\"Hadley\", \"Wickham\", , \"hadley@posit.co\", role = \"aut\", comment = c(ORCID = \"0000-0003-4757-117X\")), person(\"Google Inc\", role = \"cph\"), person(\"Posit Software, PBC\", role = c(\"cph\", \"fnd\")) )",
->>>>>>> cd74121a5cfb1c9178c21c971daa69458ab32600
       "Description": "Provides utilities for working with Google APIs <https://developers.google.com/apis-explorer>.  This includes functions and classes for handling common credential types and for preparing, executing, and processing HTTP requests.",
       "License": "MIT + file LICENSE",
       "URL": "https://gargle.r-lib.org, https://github.com/r-lib/gargle",
       "BugReports": "https://github.com/r-lib/gargle/issues",
       "Depends": [
-<<<<<<< HEAD
-        "R (>= 4.2)"
-=======
         "R (>= 4.1)"
->>>>>>> cd74121a5cfb1c9178c21c971daa69458ab32600
       ],
       "Imports": [
         "cli (>= 3.0.1)",
@@ -3209,14 +3194,8 @@
         "glue (>= 1.3.0)",
         "httr (>= 1.4.5)",
         "jsonlite",
-<<<<<<< HEAD
-        "lifecycle",
-        "openssl",
-        "R6",
-=======
         "lifecycle (>= 0.2.0)",
         "openssl",
->>>>>>> cd74121a5cfb1c9178c21c971daa69458ab32600
         "rappdirs",
         "rlang (>= 1.1.0)",
         "stats",
@@ -3230,31 +3209,18 @@
         "httpuv",
         "knitr",
         "rmarkdown",
-<<<<<<< HEAD
-=======
         "sodium",
->>>>>>> cd74121a5cfb1c9178c21c971daa69458ab32600
         "spelling",
         "testthat (>= 3.1.7)"
       ],
       "VignetteBuilder": "knitr",
       "Config/Needs/website": "tidyverse/tidytemplate",
-<<<<<<< HEAD
-      "Config/roxygen2/version": "8.1.0",
-      "Config/testthat/edition": "3",
-      "Config/usethis/last-upkeep": "2026-10-20",
-      "Encoding": "UTF-8",
-      "Language": "en-US",
-      "NeedsCompilation": "no",
-      "Author": "Jennifer Bryan [aut, cre] (ORCID: <https://orcid.org/0000-0002-6983-2759>), Craig Citro [aut], Hadley Wickham [aut] (ORCID: <https://orcid.org/0000-0003-4757-117X>), Google Inc [cph], Posit Software, PBC [cph, fnd] (ROR: <https://ror.org/03wc8by49>)",
-=======
       "Config/testthat/edition": "3",
       "Encoding": "UTF-8",
       "Language": "en-US",
       "RoxygenNote": "7.3.3",
       "NeedsCompilation": "no",
       "Author": "Jennifer Bryan [aut, cre] (ORCID: <https://orcid.org/0000-0002-6983-2759>), Craig Citro [aut], Hadley Wickham [aut] (ORCID: <https://orcid.org/0000-0003-4757-117X>), Google Inc [cph], Posit Software, PBC [cph, fnd]",
->>>>>>> cd74121a5cfb1c9178c21c971daa69458ab32600
       "Maintainer": "Jennifer Bryan <jenny@posit.co>",
       "Repository": "CRAN"
     },
@@ -3768,35 +3734,20 @@
     },
     "googledrive": {
       "Package": "googledrive",
-<<<<<<< HEAD
-      "Version": "2.2.0",
-      "Source": "Repository",
-      "Title": "An Interface to Google Drive",
-      "Authors@R": "c( person(\"Lucy\", \"D'Agostino McGowan\", role = \"aut\"), person(\"Jennifer\", \"Bryan\", , \"jenny@posit.co\", role = c(\"aut\", \"cre\"), comment = c(ORCID = \"0000-0002-6983-2759\")), person(\"Posit Software, PBC\", role = c(\"cph\", \"fnd\")) )",
-=======
       "Version": "2.1.2",
       "Source": "Repository",
       "Title": "An Interface to Google Drive",
       "Authors@R": "c( person(\"Lucy\", \"D'Agostino McGowan\", , role = \"aut\"), person(\"Jennifer\", \"Bryan\", , \"jenny@posit.co\", role = c(\"aut\", \"cre\"), comment = c(ORCID = \"0000-0002-6983-2759\")), person(\"Posit Software, PBC\", role = c(\"cph\", \"fnd\")) )",
->>>>>>> cd74121a5cfb1c9178c21c971daa69458ab32600
       "Description": "Manage Google Drive files from R.",
       "License": "MIT + file LICENSE",
       "URL": "https://googledrive.tidyverse.org, https://github.com/tidyverse/googledrive",
       "BugReports": "https://github.com/tidyverse/googledrive/issues",
       "Depends": [
-<<<<<<< HEAD
-        "R (>= 4.2)"
-      ],
-      "Imports": [
-        "cli (>= 3.0.0)",
-        "gargle (>= 1.7.0)",
-=======
         "R (>= 4.1)"
       ],
       "Imports": [
         "cli (>= 3.0.0)",
         "gargle (>= 1.6.0)",
->>>>>>> cd74121a5cfb1c9178c21c971daa69458ab32600
         "glue (>= 1.4.2)",
         "httr",
         "jsonlite",
@@ -3804,11 +3755,7 @@
         "magrittr",
         "pillar (>= 1.9.0)",
         "purrr (>= 1.0.1)",
-<<<<<<< HEAD
-        "rlang (>= 1.2.0)",
-=======
         "rlang (>= 1.0.2)",
->>>>>>> cd74121a5cfb1c9178c21c971daa69458ab32600
         "tibble (>= 2.0.0)",
         "utils",
         "uuid",
@@ -3818,16 +3765,6 @@
       "Suggests": [
         "curl",
         "dplyr (>= 1.0.0)",
-<<<<<<< HEAD
-        "spelling",
-        "testthat (>= 3.1.5)"
-      ],
-      "Config/Needs/website": "quarto, tidyverse, tidyverse/tidytemplate",
-      "Config/roxygen2/version": "8.1.0",
-      "Config/testthat/edition": "3",
-      "Encoding": "UTF-8",
-      "Language": "en-US",
-=======
         "knitr",
         "rmarkdown",
         "spelling",
@@ -3839,7 +3776,6 @@
       "Encoding": "UTF-8",
       "Language": "en-US",
       "RoxygenNote": "7.3.3",
->>>>>>> cd74121a5cfb1c9178c21c971daa69458ab32600
       "NeedsCompilation": "no",
       "Author": "Lucy D'Agostino McGowan [aut], Jennifer Bryan [aut, cre] (ORCID: <https://orcid.org/0000-0002-6983-2759>), Posit Software, PBC [cph, fnd]",
       "Maintainer": "Jennifer Bryan <jenny@posit.co>",
@@ -3847,11 +3783,7 @@
     },
     "googlesheets4": {
       "Package": "googlesheets4",
-<<<<<<< HEAD
-      "Version": "1.1.3",
-=======
       "Version": "1.1.2",
->>>>>>> cd74121a5cfb1c9178c21c971daa69458ab32600
       "Source": "Repository",
       "Title": "Access Google Sheets using the Sheets API V4",
       "Authors@R": "c( person(\"Jennifer\", \"Bryan\", , \"jenny@posit.co\", role = c(\"cre\", \"aut\"), comment = c(ORCID = \"0000-0002-6983-2759\")), person(\"Posit Software, PBC\", role = c(\"cph\", \"fnd\")) )",
@@ -3860,29 +3792,18 @@
       "URL": "https://googlesheets4.tidyverse.org, https://github.com/tidyverse/googlesheets4",
       "BugReports": "https://github.com/tidyverse/googlesheets4/issues",
       "Depends": [
-<<<<<<< HEAD
-        "R (>= 4.2)"
-=======
         "R (>= 3.6)"
->>>>>>> cd74121a5cfb1c9178c21c971daa69458ab32600
       ],
       "Imports": [
         "cellranger",
         "cli (>= 3.0.0)",
         "curl",
-<<<<<<< HEAD
-        "gargle (>= 1.7.0)",
-=======
         "gargle (>= 1.6.0)",
->>>>>>> cd74121a5cfb1c9178c21c971daa69458ab32600
         "glue (>= 1.3.0)",
         "googledrive (>= 2.1.0)",
         "httr",
         "ids",
-<<<<<<< HEAD
-=======
         "lifecycle",
->>>>>>> cd74121a5cfb1c9178c21c971daa69458ab32600
         "magrittr",
         "methods",
         "purrr",
@@ -3901,17 +3822,10 @@
       ],
       "ByteCompile": "true",
       "Config/Needs/website": "tidyverse, tidyverse/tidytemplate",
-<<<<<<< HEAD
-      "Config/roxygen2/version": "8.1.0",
-      "Config/testthat/edition": "3",
-      "Encoding": "UTF-8",
-      "Language": "en-US",
-=======
       "Config/testthat/edition": "3",
       "Encoding": "UTF-8",
       "Language": "en-US",
       "RoxygenNote": "7.3.2.9000",
->>>>>>> cd74121a5cfb1c9178c21c971daa69458ab32600
       "NeedsCompilation": "no",
       "Author": "Jennifer Bryan [cre, aut] (ORCID: <https://orcid.org/0000-0002-6983-2759>), Posit Software, PBC [cph, fnd]",
       "Maintainer": "Jennifer Bryan <jenny@posit.co>",
@@ -4520,11 +4434,7 @@
     },
     "insight": {
       "Package": "insight",
-<<<<<<< HEAD
-      "Version": "1.7.0",
-=======
       "Version": "1.6.0",
->>>>>>> cd74121a5cfb1c9178c21c971daa69458ab32600
       "Source": "Repository",
       "Type": "Package",
       "Title": "Easy Access to Model Information for Various Model Objects",
@@ -4690,11 +4600,7 @@
       "Config/testthat/parallel": "false",
       "Config/Needs/website": "easystats/easystatstemplate",
       "Config/Needs/check": "stan-dev/cmdstanr",
-<<<<<<< HEAD
-      "Config/roxygen2/version": "8.1.1",
-=======
       "Config/roxygen2/version": "8.1.0",
->>>>>>> cd74121a5cfb1c9178c21c971daa69458ab32600
       "NeedsCompilation": "no",
       "Author": "Daniel Lüdecke [aut, cre] (ORCID: <https://orcid.org/0000-0002-8895-3206>), Dominique Makowski [aut, ctb] (ORCID: <https://orcid.org/0000-0001-5375-9967>), Indrajeet Patil [aut, ctb] (ORCID: <https://orcid.org/0000-0003-1995-6531>), Philip Waggoner [aut, ctb] (ORCID: <https://orcid.org/0000-0002-7825-7573>), Mattan S. Ben-Shachar [aut, ctb] (ORCID: <https://orcid.org/0000-0002-4287-4801>), Brenton M. Wiernik [aut, ctb] (ORCID: <https://orcid.org/0000-0001-9560-6336>), Vincent Arel-Bundock [aut, ctb] (ORCID: <https://orcid.org/0000-0003-2042-7063>), Etienne Bacher [aut, ctb] (ORCID: <https://orcid.org/0000-0002-9271-5075>), Alex Hayes [rev] (ORCID: <https://orcid.org/0000-0002-4985-5160>), Grant McDermott [ctb] (ORCID: <https://orcid.org/0000-0001-7883-8573>), Rémi Thériault [ctb] (ORCID: <https://orcid.org/0000-0003-4315-6788>), Alex Reinhart [ctb] (ORCID: <https://orcid.org/0000-0002-6658-514X>), Jeffrey Girard [ctb] (ORCID: <https://orcid.org/0000-0002-7359-3746>)",
       "Repository": "CRAN"
@@ -5122,32 +5028,19 @@
     },
     "litedown": {
       "Package": "litedown",
-<<<<<<< HEAD
-      "Version": "1.0",
-      "Source": "Repository",
-      "Type": "Package",
-      "Title": "A Lightweight Version of R Markdown",
-      "Authors@R": "c( person(\"Yihui\", \"Xie\", role = c(\"aut\", \"cre\"), email = \"xie@yihui.name\", comment = c(ORCID = \"0000-0003-0645-5666\", URL = \"https://yihui.org\")), person(\"Tim\", \"Taylor\", role = \"ctb\", comment = c(ORCID = \"0000-0002-8587-7113\")), person(\"John\", \"MacFarlane\", role = \"cph\", comment = \"Author of cmark\"), person(\"Jeroen\", \"Ooms\", role = c(\"ctb\", \"cph\"), comment = \"Author of the R bindings to cmark in the commonmark package, from which the C glue code was adapted\"), person(\"GitHub, Inc.\", role = \"cph\", comment = \"Author of the cmark-gfm extensions\") )",
-      "Description": "Render R Markdown to Markdown (without using 'knitr'), and Markdown to lightweight HTML or 'LaTeX' documents via the bundled 'cmark-gfm' library (instead of 'Pandoc'). Some missing Markdown features in 'cmark-gfm' are also supported, such as raw HTML or 'LaTeX' blocks, 'LaTeX' math, superscripts, subscripts, footnotes, element attributes, and appendices, but not all 'Pandoc' Markdown features are (or will be) supported. With additional JavaScript and CSS, you can also create HTML slides and articles. This package can be viewed as a trimmed-down version of R Markdown and 'knitr'. It does not aim at rich Markdown features or a large variety of output formats (the primary formats are HTML and 'LaTeX'). Book and website projects of multiple input documents are also supported.",
-=======
       "Version": "0.11",
       "Source": "Repository",
       "Type": "Package",
       "Title": "A Lightweight Version of R Markdown",
       "Authors@R": "c( person(\"Yihui\", \"Xie\", role = c(\"aut\", \"cre\"), email = \"xie@yihui.name\", comment = c(ORCID = \"0000-0003-0645-5666\", URL = \"https://yihui.org\")), person(\"Tim\", \"Taylor\", role = \"ctb\", comment = c(ORCID = \"0000-0002-8587-7113\")), person() )",
       "Description": "Render R Markdown to Markdown (without using 'knitr'), and Markdown to lightweight HTML or 'LaTeX' documents with the 'commonmark' package (instead of 'Pandoc'). Some missing Markdown features in 'commonmark' are also supported, such as raw HTML or 'LaTeX' blocks, 'LaTeX' math, superscripts, subscripts, footnotes, element attributes, and appendices, but not all 'Pandoc' Markdown features are (or will be) supported. With additional JavaScript and CSS, you can also create HTML slides and articles. This package can be viewed as a trimmed-down version of R Markdown and 'knitr'. It does not aim at rich Markdown features or a large variety of output formats (the primary formats are HTML and 'LaTeX'). Book and website projects of multiple input documents are also supported.",
->>>>>>> cd74121a5cfb1c9178c21c971daa69458ab32600
       "Depends": [
         "R (>= 3.2.0)"
       ],
       "Imports": [
         "utils",
-<<<<<<< HEAD
-        "xfun (>= 0.62)"
-=======
         "commonmark (>= 2.0.0)",
         "xfun (>= 0.55)"
->>>>>>> cd74121a5cfb1c9178c21c971daa69458ab32600
       ],
       "Suggests": [
         "rbibutils",
@@ -5159,18 +5052,11 @@
       "License": "MIT + file LICENSE",
       "URL": "https://github.com/yihui/litedown",
       "BugReports": "https://github.com/yihui/litedown/issues",
-<<<<<<< HEAD
-      "Encoding": "UTF-8",
-      "Config/roxygen2/version": "8.1.1",
-      "NeedsCompilation": "yes",
-      "Author": "Yihui Xie [aut, cre] (ORCID: <https://orcid.org/0000-0003-0645-5666>, URL: https://yihui.org), Tim Taylor [ctb] (ORCID: <https://orcid.org/0000-0002-8587-7113>), John MacFarlane [cph] (Author of cmark), Jeroen Ooms [ctb, cph] (Author of the R bindings to cmark in the commonmark package, from which the C glue code was adapted), GitHub, Inc. [cph] (Author of the cmark-gfm extensions)",
-=======
       "VignetteBuilder": "litedown",
       "Encoding": "UTF-8",
       "Config/roxygen2/version": "8.1.0",
       "NeedsCompilation": "no",
       "Author": "Yihui Xie [aut, cre] (ORCID: <https://orcid.org/0000-0003-0645-5666>, URL: https://yihui.org), Tim Taylor [ctb] (ORCID: <https://orcid.org/0000-0002-8587-7113>)",
->>>>>>> cd74121a5cfb1c9178c21c971daa69458ab32600
       "Maintainer": "Yihui Xie <xie@yihui.name>",
       "Repository": "CRAN"
     },
@@ -5394,16 +5280,6 @@
     },
     "markdown": {
       "Package": "markdown",
-<<<<<<< HEAD
-      "Version": "2.1",
-      "Source": "Repository",
-      "Type": "Package",
-      "Title": "A Thin Wrapper of 'litedown' to Render Markdown Documents",
-      "Authors@R": "c( person(\"Yihui\", \"Xie\", role = c(\"aut\", \"cre\"), email = \"xie@yihui.name\", comment = c(ORCID = \"0000-0003-0645-5666\")), person(\"JJ\", \"Allaire\", role = \"aut\"), person(\"Jeffrey\", \"Horner\", role = \"aut\"), person(\"Henrik\", \"Bengtsson\", role = \"ctb\"), person(\"Jim\", \"Hester\", role = \"ctb\"), person(\"Yixuan\", \"Qiu\", role = \"ctb\"), person(\"Kohske\", \"Takahashi\", role = \"ctb\"), person(\"Adam\", \"November\", role = \"ctb\"), person(\"Nacho\", \"Caballero\", role = \"ctb\"), person(\"Jeroen\", \"Ooms\", role = \"ctb\"), person(\"Thomas\", \"Leeper\", role = \"ctb\"), person(\"Joe\", \"Cheng\", role = \"ctb\"), person(\"Andrzej\", \"Oles\", role = \"ctb\"), person(given = \"Posit Software, PBC\", role = c(\"cph\", \"fnd\")) )",
-      "Description": "Render Markdown to HTML/LaTeX. This package has been superseded by 'litedown'. Please call 'litedown::mark()' directly.",
-      "Depends": [
-        "R (>= 3.2.0)"
-=======
       "Version": "2.0",
       "Source": "Repository",
       "Type": "Package",
@@ -5412,7 +5288,6 @@
       "Description": "Render Markdown to full and lightweight HTML/LaTeX documents with the 'commonmark' package. This package has been superseded by 'litedown'.",
       "Depends": [
         "R (>= 2.11.1)"
->>>>>>> cd74121a5cfb1c9178c21c971daa69458ab32600
       ],
       "Imports": [
         "utils",
@@ -5428,17 +5303,10 @@
       "License": "MIT + file LICENSE",
       "URL": "https://github.com/rstudio/markdown",
       "BugReports": "https://github.com/rstudio/markdown/issues",
-<<<<<<< HEAD
-      "Encoding": "UTF-8",
-      "Config/roxygen2/version": "8.1.1",
-      "NeedsCompilation": "no",
-      "Author": "Yihui Xie [aut, cre] (ORCID: <https://orcid.org/0000-0003-0645-5666>), JJ Allaire [aut], Jeffrey Horner [aut], Henrik Bengtsson [ctb], Jim Hester [ctb], Yixuan Qiu [ctb], Kohske Takahashi [ctb], Adam November [ctb], Nacho Caballero [ctb], Jeroen Ooms [ctb], Thomas Leeper [ctb], Joe Cheng [ctb], Andrzej Oles [ctb], Posit Software, PBC [cph, fnd]",
-=======
       "RoxygenNote": "7.3.2",
       "Encoding": "UTF-8",
       "NeedsCompilation": "no",
       "Author": "Yihui Xie [aut, cre] (<https://orcid.org/0000-0003-0645-5666>), JJ Allaire [aut], Jeffrey Horner [aut], Henrik Bengtsson [ctb], Jim Hester [ctb], Yixuan Qiu [ctb], Kohske Takahashi [ctb], Adam November [ctb], Nacho Caballero [ctb], Jeroen Ooms [ctb], Thomas Leeper [ctb], Joe Cheng [ctb], Andrzej Oles [ctb], Posit Software, PBC [cph, fnd]",
->>>>>>> cd74121a5cfb1c9178c21c971daa69458ab32600
       "Maintainer": "Yihui Xie <xie@yihui.name>",
       "Repository": "CRAN"
     },
@@ -5804,11 +5672,7 @@
     },
     "openssl": {
       "Package": "openssl",
-<<<<<<< HEAD
-      "Version": "2.5.0",
-=======
       "Version": "2.4.2",
->>>>>>> cd74121a5cfb1c9178c21c971daa69458ab32600
       "Source": "Repository",
       "Type": "Package",
       "Title": "Toolkit for Encryption, Signatures and Certificates Based on OpenSSL",
@@ -7203,11 +7067,7 @@
       "NeedsCompilation": "no",
       "Author": "Kevin Ushey [aut, cre] (ORCID: <https://orcid.org/0000-0003-2880-7407>), Hadley Wickham [aut] (ORCID: <https://orcid.org/0000-0003-4757-117X>), Posit Software, PBC [cph, fnd]",
       "Maintainer": "Kevin Ushey <kevin@rstudio.com>",
-<<<<<<< HEAD
-      "Repository": "RSPM"
-=======
       "Repository": "CRAN"
->>>>>>> cd74121a5cfb1c9178c21c971daa69458ab32600
     },
     "reprex": {
       "Package": "reprex",

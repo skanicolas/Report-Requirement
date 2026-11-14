@@ -1,6 +1,6 @@
 ---
 title: "Two Variables: Qualitative"
-author: Shapple Kate Anne A. Nicolas
+author: Lorenzo D. Babato
 date: today
 format:
   html:
@@ -16,9 +16,10 @@ cache: true
 
 ```{r}
 #| label: preliminaries
-#| warning: false 
+#| warning: false
 #| message: false
 
+# install packages: install.packages("package")
 # load packages
 library(tidyverse) 
 library(knitr)
@@ -26,86 +27,87 @@ library(gtsummary)
 library(ggstatsplot)
 library(downlit)
 library(broom)
+library(car)
 library(here)
 ```
 
 ```{r}
 #| label: data
-#| warning: false 
+#| warning: false
 #| message: false
-
-# load the data
-df <- read_csv(here("data", "My_Data.csv"))
+df <- read_csv(here("data", "my_dataset_enso.csv"))
 
 df <- df |>
   mutate(
-    stress_level = factor(
-      stress_level,
-      levels = c("Low", "Moderate", "High"),
+    # 1. First Ordinal Variable: Academic Satisfaction
+    Academic_Satisfaction = factor(
+      Academic_Satisfaction,
+      levels = c("Low_satisfaction", "Moderate_Satisfaction", "High_Satisfaction"),
       ordered = TRUE
     ),
-    travel_mode = factor(
-      travel_mode,
-      levels = c(
-        "Non-Motorized Transport (Walking / Biking)",
-        "Motorized Transport (Tricycle / Jeepney / Motorcycle)"
-      )
+    
+    # 2. Second Ordinal Variable: Sleep Duration
+    Sleep_Duration = factor(
+      Sleep_Duration,
+      levels = c("Less_than_6_hours", "6_to_8_hours", "More_than_8_hours"),
+      ordered = TRUE
     )
-  )|>
-    select(
-      stress_level,
-      travel_mode,
-    )
+  ) |>
+  select(
+    Academic_Satisfaction,
+    Sleep_Duration
+  )
 ```
 
-## NVSU_Student_Survey Set
+## NVSU_Student_Survey
 
-The `NVSU_Student_Survey` data set of the [{ggstatsplot}]{style="font-family:monospace;"} package is a data frame with 68 rows and 2 variables.
+The 'NVSU_Student_Survey' data set is a data frame with 68 rows and 2 variables.
 
-- `travel_mode` Motorized Transport (Tricycle / Jeepney / Motorcycle), Non-Motorized Transport (Walking / Biking).
+- 'Living_Arrangement' With_Family, Independent_Living.
 
-- `stress_level` Low, Moderate, High.
+- 'Academic_Satisfaction' Low_satisfaction, Moderate_Satisfaction, High_Satisfaction.
 
-This data set provides information on the academic habits and lifestyle of undergraduate students at Nueva Vizcaya State University (NVSU), summarized according to daily travel time, weekly study hours, device usage, primary mode of transportation, exam stress level, and internet connection source.
+This data set provides information on student profiles at Nueva Vizcaya State University (NVSU), summarized according to living arrangements and academic satisfaction.
 
-The first 6 rows of the level data set are shown in @tbl-level.
+The first 6 rows of the data set are shown in @tbl-satisfaction
 
 ```{r}
-#| label: tbl-level
+#| label: tbl-satisfaction
 #| warning: false
 #| message: false
+#| error: false
 #| tbl-cap: "The first 6 observations of the data set."
 
-df |>
-  head() |> # getting the first six rows of the data
+df |> # call the data
+  head() |> # get the first six rows of the data
   kable(
-    col.names = c("Stress Level", "Mode of Transportation")
-  ) # creating a table
+    col.names = c("Academic Satisfaction", "Duration of Sleep")
+  ) # create a table
 ```
 
-Descriptive Statistics
+## Descriptive Statistics
 
-The cross-tabulation of `stress_level` when grouped according to `travel_mode` is shown in @tbl-level Most of the students use motorized transport, and the distribution of stress levels across transport modes can be observed in the table.
+The frequency distribution of `Academic_Satisfaction` when grouped according to `Sleep_Duration` is shown in @tbl-satisfaction. Most of the students report moderate satisfaction. The majority of students with lower sleep durations cluster in specific satisfaction tiers, whereas those with balanced sleep show wider distributions across categories.
 
 ```{r}
 
 #| label: tbl-summary
-#| tbl-cap: "Summary statistics of `stress_level` when grouped according to `travel_mode`."
+#| tbl-cap: "Summary statistics of `Academic_Satisfaction` when grouped according to `Sleep_Duration`."
 #| message: false
 
 df |> 
 
 #  tbl_summary(
-#    by = stress_level,
-#    include = travel_mode
+#    by = Academic_Satisfaction,
+#    include = Sleep_Duration
     tbl_cross(
-      row = stress_level,
-      col = travel_mode,
+      row = Academic_Satisfaction,
+      col = Sleep_Duration,
       percent = "column",
       margin = c("row", "column"),
       label = list(
-        stress_level ~ "Level of Stress",
-        travel_mode ~ "Mode of Transportation"
+        Academic_Satisfaction ~ "Academic Satisfaction",
+        Sleep_Duration ~ "Duration of Sleep"
       )
   )
 
@@ -115,13 +117,13 @@ df |>
 
 ## Research Question
 
-Does students' mode of transportation affect their level of stress?
+Does the students' duration of sleep affect their academic satisfaction?
 
 ## Hypothesis and Test Statistics
 
-- $H_0:p_{Travel\,Mode}-p_{Stress\,Level}=0$; Students' mode of transportation and their level of stress are independent (no association).
+- $H_0:p_{Sleep\,Duration}-p_{Academic\,Satisfaction}=0$; Students' duration of sleep and their academic satisfaction are independent (no association).
 
-- $H_a:p_{Travel\,Mode}-p_{Stress\,Level}\ne0$; Students' mode of transportation and their level of stress are dependent (associated).
+- $H_a:p_{Sleep\,Duration}-p_{Academic\,Satisfaction}\ne0$; Students' duration of sleep and their academic satisfaction are dependent (associated).
 
 - Significance level, $\alpha=5\%\,\text{or p-value}\,\le\,.05$.
 
@@ -129,7 +131,7 @@ Does students' mode of transportation affect their level of stress?
 
 - Independence.
 
-- Expected counts: Not all expected counts are $\lt5$ (the 'Low' stress category expected counts are below 5; see @tbl-expected).
+- Expected counts: Not all expected counts are $\ge 5$ (multiple cells fall below 5; see @tbl-expected).
 
 ```{r}
 #| label: tbl-expected
@@ -137,26 +139,25 @@ Does students' mode of transportation affect their level of stress?
 #| warning: false
 
 # Create contingency table using df
-observed <- table(df$stress_level, df$travel_mode)
+observed <- table(df$Sleep_Duration, df$Academic_Satisfaction)
 
 # Perform chi-squared test
 chi_test <- chisq.test(observed)
 
-# Extract the expected counts (this creates the 'expected' object)
+# Extract the expected counts
 expected <- chi_test$expected
 
-# Convert expected counts to data frame safely preserving row names
+# View expected counts
 expected |>
   as_tibble() |>
   mutate(
-    " " = c("Low", "Moderate", "High")
+    " " = c("Less_than_6_hours", "6_to_8_hours", "More_than_8_hours")
   ) |>
   relocate(" ", .before = 1) |>
   mutate(across(where(is.numeric), ~ round(.x, 2))) |>
   kable()
-
 #as.data.frame(chi_test$expected) |>
-#  tibble::rownames_to_column(var = "Stress Level") |>
+#  tibble::rownames_to_column(var = "Sleep Duration") |>
 #  mutate(across(where(is.numeric), ~ round(.x, 2))) |>
 #  kable()
 ```
@@ -172,12 +173,12 @@ The bar chart and test statistics are shown on @fig-test.
 
 ggbarstats(
   data = df,
-  x = travel_mode,
-  y = stress_level,
+  x = Sleep_Duration,
+  y = Academic_Satisfaction,
   type="nonparametric",
   bf.message = FALSE,
-  legend.title = "Mode of Transportation"
+  legend.title = "Sleep Duration"
 )
 ```
 
-Based on the bar chart and the $p$-value being greater than 5% ($p = 0.96$), we fail to reject the null hypothesis. There is insufficient evidence to conclude that students' mode of transportation affects their level of stress.
+Based on the bar chart and the $p$-value being less than 5% ($p < 0.001$), we reject the null hypothesis. There is strong evidence that students' duration of sleep affects their academic satisfaction.
